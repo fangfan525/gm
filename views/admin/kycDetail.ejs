@@ -1,0 +1,164 @@
+<style>
+  /* .form-group {
+    margin-top: 15px!important;
+  } */
+  .btn-check{
+    color:#fff;
+    background: green;
+  }
+  .btn-check:hover{
+    color:#fff;
+    background: green;
+    margin-left: 10px;
+  }
+  .detail-title{
+    display: inline-block;
+    width: 120px;
+  }
+  .detail-title img{
+    width:300px;
+    height: 200px;
+    margin-top: 10px;
+  }
+</style>
+<!-- Content Wrapper. Contains page content -->
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      KYC认证详情
+      <!-- <small>Advanced form element</small> -->
+    </h1>
+    <h5><a href="/admin/kycCredit/">返回</a></h5>
+  </section>
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-info">
+          <!-- /.box-header -->
+          <div class="box-body pad">
+            <form role="form" id="contentfrom">
+              <div class="box-body" id="list">
+  
+
+              </div>
+              <div class="box-footer">
+                  <input type="hidden" id="id" name="id" value="<%= id %>" />
+                  <button type="button"  class="btn btn-primary"  onclick="check1(1)">审核通过</button>
+                  <button type="button"  class="btn btn-primary"  onclick="check2(2)">审核不通过</button>
+                </div>
+            </form>
+
+          </div>
+        </div>
+        <!-- /.box -->
+        <!-- /.col-->
+      </div>
+      <!-- ./row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script type="text/javascript">
+  $(function () {
+    var ids = $('#id').val();
+    if (ids != 0) {
+      initData();
+    }
+  });
+  
+  //加载初始化数据
+  function initData() {
+    $.ajax({
+      type: 'POST',
+      dataType: "json",
+      url: "/admins/kycDetail",
+      data: {
+        id: $('#id').val()
+      },
+      success: function (result) {
+        var data = result.data ;
+        console.log(data);
+        var str = ''
+        var status = data.status
+        var time1 = Format(data.createdAt,"yyyy-MM-dd HH:mm:ss");
+        var time2 = Format(data.updatedAt,"yyyy-MM-dd HH:mm:ss");
+         str += '<div><label class="detail-title">'+'创建时间：'+ '</label><span>'+ time1 +'</span></div>';
+         str += '<div><label class="detail-title">'+'更新时间：'+ '</label><span>'+ time2 +'</span></div>';
+         str += '<div><label class="detail-title">'+'id：'+ '</label><span>'+ data.id +'</span></div>';
+         str += '<div><label class="detail-title">'+'手机号：'+ '</label><span>'+ data.phone +'</span></div>';
+         str += '<div><label class="detail-title">'+'姓名：'+ '</label><span>'+ data.name +'</span></div>';
+         str += '<div><label class="detail-title">'+'身份证号：'+ '</label><span>'+ data.idcard +'</span></div>';
+         str += '<div><label class="detail-title">'+'身份证正面照：'+ '</label><span>'+ '<img src="'+data.idcardPositive+'" width="300" height="200" style="margin-top:10px;"/></span></div>';
+         str += '<div><label class="detail-title">'+'身份证背面照：'+ '</label><span>'+ '<img src="'+data.idcardSide+'" width="300" height="200" style="margin-top:10px;"/></span></div>';
+         str += '<div><label class="detail-title">'+'手持身份证照：'+ '</label><span>'+ '<img src="'+data.idcardHold+'" width="300" height="200" style="margin-top:10px;"/></span></div>';
+         str += '<div><label class="detail-title">'+'状态：'+ '</label><span class="status-code"></span></div>';
+        $("#list").append(str);
+        //判断状态
+        if(data.status==0){
+            $('.status-code').html("待审核"); 
+          } else if (data.status==1) {
+            $('.status-code').html("审核通过");
+            $('.btn-primary').hide();
+          }else{
+            $('.status-code').html("审核失败"); 
+          }
+      },
+      error: function (data) {
+        alert("发生错误");
+      }
+    });
+  }
+    //ajax提交form表单的方式
+    function check1(status) {
+    var AjaxURL = "/admins/kycExamine";
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: AjaxURL,
+      data: {
+        id: $('#id').val(),
+        status:status
+      },
+      success: function (result) {
+        if (result.code == 1) {
+          alert(result.msg);
+          $('.btn-primary').hide();
+          var ids = $('#id').val();
+          if (ids != 0) {
+            initData();
+          }
+        }
+      },
+      error: function (data) {
+        alert("发生错误");
+      }
+
+    });
+  }
+
+  //ajax提交form表单的方式
+  function check2(status) {
+    var AjaxURL = "/admins/kycExamine";
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: AjaxURL,
+      data: {
+        id: $('#id').val(),
+        status:status
+      },
+      success: function (result) {
+        if (result.code == 1) {
+          alert(result.msg);
+        }
+      },
+      error: function (data) {
+        alert("发生错误");
+      }
+
+    });
+  }
+</script>

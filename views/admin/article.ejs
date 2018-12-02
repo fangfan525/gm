@@ -1,0 +1,135 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      文章管理
+    </h1>
+    <h5><a href="/admin/article/add/0">添加文章</a></h5>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <!-- /.box-header -->
+          <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>时间</th>
+                  <th>标题</th>
+                  <th>作者</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="listbody">
+
+              </tbody>
+              <!-- <tfoot>
+                <tr>
+                  <th>标题</th>
+                  <th>作者</th>
+                  <th>时间</th>
+                  <th>操作</th>
+                </tr>
+              </tfoot> -->
+            </table>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                  <ul class="pagination" id="pages">
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script type="text/javascript">
+  $(function () {
+    initData(1);
+  });
+
+  //加载初始化数据
+  function initData(page) {
+    var listhtml = '';
+    $.ajax({
+      type: 'POST',
+      dataType: "json",
+      url: "/admins/articles",
+      data: {
+        page: page
+      },
+      success: function (result) {
+        $.each(result.data, function (i, item) {
+          var time = Format(item.createdAt,"yyyy-MM-dd HH:mm:ss");
+          listhtml += '<tr><td>' + time + '</td><td>' + item.title + '</td><td>' + item.author + '</td><td> <a href="/admin/article/add/'+item.id+'">编辑</a> <a href="javascript:void(0)" onclick="del('+item.id+')">删除</a></td></tr>';
+        });
+        $('#listbody').html(listhtml);
+        if(result.page==1){
+          var predisabled = 'disabled'; 
+        }else{
+          var prepage = 'onclick="initData('+result.prepage+')"'; 
+        }
+        if(result.page==result.pages){
+          var nextdisabled = 'disabled';
+        }else{
+          var nextpage = 'onclick="initData('+result.nextpage+')"';
+        }
+        if(result.pages>10){
+          var pagestr='';
+          var i = (result.page-5)>1?result.page-5:1;
+          var j = (i+9)>result.pages?15:i+9;        
+          for(i;i<=j;i++){
+            var active = result.page==i?'active':'';
+            var pageclick = result.page==i?'':'onclick="initData('+i+')"';
+            pagestr += '<li class="paginate_button '+active+'"><a href="javascript:void(0);" aria-controls="example2" tabindex="0" '+pageclick+'>'+i+'</a></li>';
+          }
+        }else{
+          var pagestr='';
+          for(var i=1;i<=result.pages;i++){
+            var active = result.page==i?'active':'';
+            var pageclick = result.page==i?'':'onclick="initData('+i+')"';
+            pagestr += '<li class="paginate_button '+active+'"><a href="javascript:void(0);" aria-controls="example2" tabindex="0" '+pageclick+'>'+i+'</a></li>';
+          }
+        }
+        $('#pages').html('<li class="paginate_button active" style="line-height: 34px;padding: 0 10px;">共'+result.pages+'页</li><li class="paginate_button previous '+ predisabled +'" id="example2_previous"><a href="javascript:void(0);" aria-controls="example2" data-dt-idx="0" tabindex="0" '+prepage+'>上一页</a></li>'+pagestr+'<li class="paginate_button next '+ nextdisabled +'" id="example2_next"><a href="javascript:void(0);" aria-controls="example2" data-dt-idx="7" tabindex="0" '+nextpage+'>下一页</a></li>');
+      },
+      error: function (data) {
+        //alert("发生错误");
+      }
+    });
+  }
+  function del(id){
+    if(window.confirm('你确定要删除吗？')){
+      $.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: "/admins/delArticle",
+        data: {
+          id: id
+        },
+        success: function (result) {
+          if(result.code == 0){
+            alert(result.msg);
+          }
+          window.location.href = "/admin/article";
+        },
+        error: function (data) {
+          alert("发生错误");
+        }
+      });
+    }
+  }
+</script>

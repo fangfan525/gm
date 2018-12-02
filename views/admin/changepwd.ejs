@@ -1,0 +1,75 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      用户管理-修改密码
+      <!-- <small>Advanced form element</small> -->
+    </h1>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-info">
+          <!-- /.box-header -->
+          <div class="box-body pad">
+            <form role="form" id="contentfrom">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="exampleInputFile">老密码 *</label>
+                  <input name="password" class="form-control" placeholder="请输入老密码" style="margin-bottom:15px;">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">新密码 *</label>
+                  <input class="form-control" name="newpassword" placeholder="请输入新密码">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">确认密码 *</label>
+                  <input class="form-control" name="confirmpassword" placeholder="请再次输入新密码">
+                </div>
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <input type="hidden" name="id" value="<%= id %>" />
+                <button type="button" value="提交" onclick="check()" class="btn btn-primary">提交</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /.box -->
+        <!-- /.col-->
+      </div>
+      <!-- ./row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script type="text/javascript">
+  //ajax提交form表单的方式
+  function check() {
+    var AjaxURL = "/admins/changepassword";
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: AjaxURL,
+      data: $('#contentfrom').serialize(),
+      success: function (result) {
+        if (result.code == 0) {
+          alert(result.msg);
+        } else {
+          alert(result.msg);
+          window.location.href = "/admin";s
+        }
+      },
+      error: function (data) {
+        var data1 = JSON.stringify(data);
+        alert("error:" + data1);
+        window.location.href = "/admin";
+      }
+
+    });
+  }
+</script>

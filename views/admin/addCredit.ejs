@@ -1,0 +1,192 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      授信管理
+      <!-- <small>Advanced form element</small> -->
+    </h1>
+    <h5><a href="/admin/credit">返回</a></h5>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-info">
+          <!-- /.box-header -->
+          <div class="box-body pad">
+            <!-- <form id="contentfrom">
+              <table>
+                <tr>
+                  <td width="100">官网 *</td>
+                  <td><input id="domain" name="domain" class="form-control" placeholder=""></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td width="100">发行方 *</td>
+                  <td><input id="issuer" name="issuer" class="form-control" placeholder=""></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td width="100">币种 *</td>
+                  <td><input id="currency" name="currency" class="form-control" placeholder=""></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td width="100">体系 *</td>
+                  <td><input id="system" name="system" class="form-control" placeholder=""></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>icon *</td>
+                  <td><input id="logo_url" name="logo_url" class="form-control" placeholder="请上传图片"></td>
+                  <td><input type="file" id="file" /> </td>
+                  <td><input type="button" onclick="uploadImg()" value="上传" /></td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="hidden" id="id" name="id" value="<%= id %>" />
+                  </td>
+                  <td><input type="button" value="提交" onclick="check()" /></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </table>
+            </form> -->
+            <form role="form" id="contentfrom">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">官网 *</label>
+                  <input class="form-control" id="domain" name="domain" placeholder="">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">发行方 *</label>
+                  <input class="form-control" id="issuer" name="issuer" placeholder="">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">币种 *</label>
+                  <input class="form-control" id="currency" name="currency" placeholder="">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">体系 *</label>
+                  <input class="form-control" id="system" name="system" placeholder="">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">排序</label>
+                  <input class="form-control" id="sort" name="sort" placeholder="">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputFile">上传图片 *</label>
+                  <input id="logo_url" name="logo_url" class="form-control" placeholder="请上传图片" style="margin-bottom:15px;">
+                  <input type="file" id="file">
+                  <input type="button" onclick="uploadImg()" value="上传" style="margin-top:15px;" />
+                </div>
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <input type="hidden" id="id" name="id" value="<%= id %>" />
+                <button type="button" value="提交" onclick="check()" class="btn btn-primary">提交</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /.box -->
+        <!-- /.col-->
+      </div>
+      <!-- ./row -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script type="text/javascript">
+  $(function () {
+    var ids = $('#id').val();
+    if (ids != 0) {
+      initData();
+    }
+  });
+
+  //加载初始化数据
+  function initData() {
+    var listhtml = '';
+    $.ajax({
+      type: 'POST',
+      dataType: "json",
+      url: "/admins/getCredit",
+      data: {
+        id: $('#id').val()
+      },
+      success: function (result) {
+        if (result.code == 1) {
+          $('#domain').val(result.data.domain);
+          $('#issuer').val(result.data.issuer);
+          $('#currency').val(result.data.currency);
+          $('#system').val(result.data.system);
+          $('#sort').val(result.data.sort);
+          $('#logo_url').val(result.data.logo_url);
+        } else {
+          alert(result.msg);
+        }
+      },
+      error: function (data) {
+        alert("发生错误");
+      }
+    });
+  }
+  //ajax提交form表单的方式
+  function check() {
+    var AjaxURL = "/admins/editCredit";
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: AjaxURL,
+      data: $('#contentfrom').serialize(),
+      success: function (result) {
+        if (result.code == 0) {
+          alert(result.msg);
+        } else {
+          window.location.href = "/admin/credit";
+        }
+      },
+      error: function (data) {
+        var data1 = JSON.stringify(data);
+        alert("error:" + data1);
+        window.location.href = "/admin/credit";
+      }
+
+    });
+
+  }
+  //图片上传
+  function uploadImg() {
+    var formData = new FormData();
+    formData.append('upload', $('#file')[0].files[0]);
+    $.ajax({
+      url: '/admins/uploadImage',
+      type: 'POST',
+      cache: false,
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (result) {
+        if (result.code == 0) {
+          alert(result.msg);
+        } else {
+          alert('上传成功');
+          $('#logo_url').val(result.data);
+        }
+      },
+      error: function (data) {
+        var data1 = JSON.stringify(data);
+        alert("error:" + data1);
+        window.location.href = "/admin/login";
+      }
+    });
+  }
+</script>

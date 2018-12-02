@@ -1,0 +1,135 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        项目列表
+      </h1>
+      <div class="input-group" style="position: relative;display: table;border-collapse: separate;width: 13%;margin-top: 14px;">
+          <input type="text" name="message" placeholder="Search" class="form-control">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-primary btn-flat">搜索</button>
+          </span>
+      </div>
+    </section>
+  
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>logo</th>
+                    <th>标题</th>
+                    <th>单票数量</th>
+                    <th>当前支持数量</th>
+                    <th>目标数量</th>
+                    <th>address</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="listbody">
+  
+                </tbody>
+            
+              </table>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                    <ul class="pagination" id="pages">
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <input id="pag" type="hidden">
+  <!-- /.content-wrapper -->
+  <script type="text/javascript">
+  
+    $(function () {
+      initData();
+    });
+  
+    //加载初始化数据
+    function initData(page) {
+      $('#pag').val(page);
+      var listhtml = '';
+      $.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: "/admins/productList",
+        data: {
+          page: page
+        },
+        success: function (result) {
+          $.each(result.data, function (i, item) {
+            var time=Format(item.create_time,"yyyy-MM-dd HH:mm:ss");
+            listhtml += '<tr><td>'+item.id+'</td><td><img src="'+item.logo+'" width="50px" /></td><td>' + item.title + '</td><td>' + item.num + '</td><td>' + item.current_num + '</td> <td>' + item.total_num + '</td><td>' + item.address + '</td><td><a href="/admin/orderDetail?id='+item.id+'">记录</a> | <a href="/admin/orderDetail?id='+item.id+'">放款</a></td></tr>';
+          });
+          $('#listbody').html(listhtml);
+        },
+        error: function (data) {
+          //alert("发生错误");
+        }
+      });
+    }
+
+    //订单通过
+    function ot(id) {
+      $.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: "/admins/orderConfirm",
+        data: {
+          id: id
+        },
+        success: function (result) {
+          alert(result.msg);
+          var pag=$('#pag').val();
+          initData(pag);
+          console.log(result);
+        },
+        error: function (data) {
+          alert("发生错误");
+        }
+      });
+    }
+
+   
+
+    //时间戳转换函数
+  function formatUnixtimestamp (unixtimestamp){
+      //var sl=unixtimestamp.slice(-3);
+      var unixtimestamp = new Date(unixtimestamp);
+      var year = 1900 + unixtimestamp.getYear();
+      var month = "0" + (unixtimestamp.getMonth() + 1);
+      var date = "0" + unixtimestamp.getDate();
+      var hour = "0" + unixtimestamp.getHours();
+      var minute = "0" + unixtimestamp.getMinutes();
+      var second = "0" + unixtimestamp.getSeconds();
+      return year + "-" + month.substring(month.length-2, month.length)  + "-" + date.substring(date.length-2, date.length)
+          + " " + hour.substring(hour.length-2, hour.length) + ":"
+          + minute.substring(minute.length-2, minute.length) + ":"
+          + second.substring(second.length-2, second.length);
+  }
+
+
+
+    
+
+  </script>
