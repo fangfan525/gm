@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>光彩MOAC</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/index/css/reset.css">
+    <link rel="stylesheet" href="/index/css/index.css">
+   
+</head>
+<body>
+<header>
+    <div class="container">
+        <p class="v-center">
+            <span class="selected">中奖公布：XXX在捐献中获奖</span>
+            <span>中奖公布：XXX在捐献中获奖</span>
+            <span>中奖公布：XXX在捐献中获奖</span>
+            <span>中奖公布：XXX在捐献中获奖</span>
+        </p>
+    </div>
+</header>
+<div class="banner">
+    <div class="nav">
+        <div class="container">
+            <div class="logo v-center"></div>
+            <ul class="v-center">
+                <li><a href="/">首页</a></li>
+                <li><a href="/project">全部项目</a></li>
+                <li><a href="/active">活动动态</a></li>
+                <li><a href="/intro">介绍</a></li>
+            </ul>
+            <!--<button class="btn_login">登录/注册</button>-->
+            <div class="login">
+                <a href="/login"><span>登录</span></a>
+                <a href="/login"><span>注册</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="container">
+        <div class="login_register">
+            <div class="card">
+                <div class="card_cont">
+                    <div class="card_nav">
+                        <span class="selected">登录</span> <span>注册</span>
+                    </div>
+
+
+                    <div class="login_con">
+                        <div><input id="email" type="email" placeholder="请输入邮箱"></div>
+                        <div><input id="password" type="password" placeholder="请输入密码"></div>
+                        <div class="slider">
+                            <div class="drag">
+                                <div class="drag_bg"></div>
+                                <div class="drag_text">拖动滑块验证</div>
+                                <div class="handler handler_bg"></div>
+                            </div>
+                        </div>
+                        <div><button onclick="login()" class="login_btn">登录</button></div>
+                        <div class="forgot"><p><a href="#">免费注册帐户</a> | <a href="#">忘记密码</a></p></div>
+                    </div >
+
+
+                    <div class="login_con" style="display: none;">
+                        <div><input id="remail" type="email" placeholder="请输入邮箱"></div>
+                        <div><input id="rpassword" type="password" placeholder="请输入密码"></div>
+                        <div><input id="rrpassword" type="password" placeholder="请确认密码"></div>
+                        <div class="send"><input type="text" id="code" placeholder="请输入验证码"><span>图片验证码</span></div>
+
+                        <div><button onclick="register()" class="login_btn">下一步</button></div>
+                        <div class="forgot"><p>已有帐户 | <a href="#">去登录</a></p></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="icon">
+                <img src="/index/imgs/login_img.jpg" alt="login">
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="container">
+        <div>
+            <img class="logo_img" src="/index/imgs/logo.png" alt="logo">
+            <p>咨询热线：</p>
+        </div>
+        <div>
+            <h5>联系我们</h5>
+            <p>地址：</p>
+            <p>网址：</p>
+            <p>电话：</p>
+        </div>
+        <div>
+            <img class="weinxin_img" src="/index/imgs/weinxin.jpg" alt="扫码关注">
+            <p>扫码关注</p>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript">
+    //一、定义一个获取DOM元素的方法
+    var $ = function(selector){
+            return  document.querySelector(selector);
+        },
+        box = $(".drag"),//容器
+        bg = $(".drag_bg"),//背景
+        text = $(".drag_text"),//文字
+        btn = $(".handler"),//滑块
+        success = false,//是否通过验证的标志
+        distance = box.offsetWidth - btn.offsetWidth;//滑动成功的宽度（距离）
+
+    //二、给滑块注册鼠标按下事件
+    btn.onmousedown = function(e){
+
+        //1.鼠标按下之前必须清除掉后面设置的过渡属性
+        btn.style.transition = "";
+        bg.style.transition ="";
+
+        //说明：clientX 事件属性会返回当事件被触发时，鼠标指针向对于浏览器页面(或客户区)的水平坐标。
+
+        //2.当滑块位于初始位置时，得到鼠标按下时的水平位置
+        var e = e || window.event;
+        var downX = e.clientX;
+
+        //三、给文档注册鼠标移动事件
+        document.onmousemove = function(e){
+
+            var e = e || window.event;
+            //1.获取鼠标移动后的水平位置
+            var moveX = e.clientX;
+
+            //2.得到鼠标水平位置的偏移量（鼠标移动时的位置 - 鼠标按下时的位置）
+            var offsetX = moveX - downX;
+
+            //3.在这里判断一下：鼠标水平移动的距离 与 滑动成功的距离 之间的关系
+            if( offsetX > distance){
+                offsetX = distance;//如果滑过了终点，就将它停留在终点位置
+            }else if( offsetX < 0){
+                offsetX = 0;//如果滑到了起点的左侧，就将它重置为起点位置
+            }
+
+            //4.根据鼠标移动的距离来动态设置滑块的偏移量和背景颜色的宽度
+            btn.style.left = offsetX + "px";
+            bg.style.width = offsetX + "px";
+
+            //如果鼠标的水平移动距离 = 滑动成功的宽度
+            if( offsetX === distance){
+
+                //1.设置滑动成功后的样式
+                text.innerHTML = "验证通过";
+                text.style.color = "#fff";
+                btn.style.color = "green";
+                btn.classList.add('handler_ok');
+
+                //2.设置滑动成功后的状态
+                success = true;
+                //成功后，清除掉鼠标按下事件和移动事件（因为移动时并不会涉及到鼠标松开事件）
+                btn.onmousedown = null;
+                document.onmousemove = null;
+            }
+        };
+
+        //四、给文档注册鼠标松开事件
+        document.onmouseup = function(e){
+
+            //如果鼠标松开时，滑到了终点，则验证通过
+            if(success){
+                return;
+            }else{
+                //反之，则将滑块复位（设置了1s的属性过渡效果）
+                btn.style.left = 0;
+                bg.style.width = 0;
+                btn.style.transition = "left 1s ease";
+                bg.style.transition = "width 1s ease";
+            }
+            //只要鼠标松开了，说明此时不需要拖动滑块了，那么就清除鼠标移动和松开事件。
+            document.onmousemove = null;
+            document.onmouseup = null;
+        };
+
+
+    }
+</script>
+ <!-- jQuery 3 -->
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+
+    //用户登录
+    function login() {
+      var email=$('#email').val();
+      var password=$('#password').val();
+      $.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: "/login",
+        data: {
+          email: email,
+          password:password
+        },
+        success: function (result) {
+         alert(result.msg);
+         if(result.code==1){
+            window.location.replace("/person");
+         }
+        },
+        error: function (data) {
+          //alert("发生错误");
+        }
+      });
+    }
+
+    //用户注册
+    function register() {
+      var email=$('#remail').val();
+      var password=$('#rpassword').val();
+      var rpassword=$('#rrpassword').val();
+      if(password!=rpassword){
+          alert("两次密码输入的不一致");
+      }
+      $.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: "/register",
+        data: {
+          email: email,
+          password:password
+        },
+        success: function (result) {
+         alert(result.msg);
+         if(result.code==1){
+            window.location.replace("/login");
+         }
+        },
+        error: function (data) {
+          //alert("发生错误");
+        }
+      });
+    }
+
+    //订单通过
+    function ot(id) {
+      $.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: "/admins/orderConfirm",
+        data: {
+          id: id
+        },
+        success: function (result) {
+          alert(result.msg);
+          var pag=$('#pag').val();
+          initData(pag);
+          console.log(result);
+        },
+        error: function (data) {
+          alert("发生错误");
+        }
+      });
+    }
+
+  </script>
+</body>
+</html>

@@ -44,6 +44,7 @@ module.exports = {
         //添加地址
         var account=chainService.getAccount();
         await Usercurrency.create({user_id:usercreate.id,num:0,address:account});
+        req.session.user = usercreate;
 
         res.json({
             code:1,
@@ -58,14 +59,14 @@ module.exports = {
      */
     login: async function (req, res) {
         var email = req.param('email');
-        var pwd = req.param('pwd');
+        var pwd = req.param('password');
         if (!email || !pwd) {
           return res.json({
             code:0,
             msg:'邮箱或密码不能为空'
           });
         }
-        var user =await Admin.findOne({email: email});
+        var user =await User.findOne({email: email});
         if (!user) {
             return res.json({
               code:0,
@@ -114,6 +115,7 @@ module.exports = {
                 msg:'你还没有登录',
               });
         }
+
         //获取充币地址
         var userCurrency= await Usercurrency.findOne({user_id:user.id});
         //获取捐献记录
@@ -126,6 +128,7 @@ module.exports = {
         var tibi=await Tibi.find({user_id:user.id});
         return res.json({
             code:1,
+            user:user,
             userCurrency:userCurrency,
             trade:trade,
             reward:reward,

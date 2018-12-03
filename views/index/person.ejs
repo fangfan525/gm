@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>光彩MOAC</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/index/css/reset.css">
+    <link rel="stylesheet" href="/index/css/index.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <p class="v-center">
+            <span class="selected">中奖公布：XXX在捐献中获奖</span>
+            <span>中奖公布：XXX在捐献中获奖</span>
+            <span>中奖公布：XXX在捐献中获奖</span>
+            <span>中奖公布：XXX在捐献中获奖</span>
+        </p>
+    </div>
+</header>
+<div class="banner">
+    <div class="nav">
+        <div class="container">
+            <div class="logo v-center"></div>
+            <ul class="v-center">
+                <li><a href="/">首页</a></li>
+                <li><a href="/project">全部项目</a></li>
+                <li><a href="/active">活动动态</a></li>
+                <li><a href="/intro">介绍</a></li>
+            </ul>
+            <!--<button class="btn_login">登录/注册</button>-->
+            <div class="login">
+                <a href="/login"><span>登录</span></a>
+                <a href="/login"><span>注册</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="container">
+        <div class="left">
+            <ul>
+                <li class="selected">账号信息</li>
+                <li>发起提币</li>
+                <li>我的单号</li>
+            </ul>
+        </div>
+        <div class="right">
+            <div style="display: block;">
+                <h5>账号管理</h5>
+                <div class="per_detail">
+                    <p>账号：<span id="account"></span></p>
+                    <p>地址：<span id="address"></span></p>
+                    <p>余额：<span id="balance"></span></p>
+                </div>
+                <div class="record">
+                    <ul>
+                        <li class="selected">捐献记录</li>
+                        <li>提币记录</li>
+                        <li>中奖记录</li>
+                    </ul>
+                    <p>2018-10-01 13:00:00 捐赠 2 Moac</p>
+                    <p>2018-10-01 14:00:00 捐赠 4 Moac</p>
+                </div>
+            </div>
+
+            <div  style="display: block;">
+                <h5>提币</h5>
+                <div class="per_detail">
+                    <p>账号：</p>
+                    <p>地址：</p>
+                    <p class="per_detail_p"><button>发起提币</button></p>
+                </div>
+            </div>
+
+            <div  style="display: block;">
+                <h5>单号</h5>
+                <div class="per_detail state">
+                        <p><span>41587876631446</span><span>中奖【二等奖】</span></p>
+                        <p><span>97784093093983</span><span>未中奖</span></p>
+                        <p><span>25447795614414</span><span>待开奖</span></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="container">
+        <div>
+            <img class="logo_img" src="/index/imgs/logo.png" alt="logo">
+            <p>咨询热线：</p>
+        </div>
+        <div>
+            <h5>联系我们</h5>
+            <p>地址：</p>
+            <p>网址：</p>
+            <p>电话：</p>
+        </div>
+        <div>
+            <img class="weinxin_img" src="/index/imgs/weinxin.jpg" alt="扫码关注">
+            <p>扫码关注</p>
+        </div>
+    </div>
+</footer>
+<!-- jQuery 3 -->
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+     $(function () {
+        userCenter();
+    });
+
+    //用户登录
+    function userCenter() {
+      $.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: "/userCenter",
+        data: {},
+        success: function (result) {
+            if(result.code==1){
+                $("#account").html(result.user.email);
+                $("#address").html(result.userCurrency.address);
+                $("#balance").html(result.balance.balance);
+
+            }else{
+                alert(result.msg);
+            }
+           
+        
+        },
+        error: function (data) {
+          //alert("发生错误");
+        }
+      });
+    }
+
+
+  </script>
+</body>
+</html>
