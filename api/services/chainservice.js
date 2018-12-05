@@ -97,7 +97,7 @@ module.exports = {
     getBalance:function(address){
         var balance = chain3.mc.getBalance(address);
         return {
-            balance:balance.toString(10)
+            balance:(balance.toString(10)/100000000000000000)
         };
 
     },

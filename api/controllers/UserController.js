@@ -58,8 +58,8 @@ module.exports = {
      * 用户登录
      */
     login: async function (req, res) {
-        var email = req.param('email');
-        var pwd = req.param('password');
+        var email = req.body.email;
+        var pwd = req.body.password;
         if (!email || !pwd) {
           return res.json({
             code:0,
